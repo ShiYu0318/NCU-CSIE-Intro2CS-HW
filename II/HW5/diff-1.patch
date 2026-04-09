@@ -1,0 +1,61 @@
+--- /Users/shiyu./Desktop/CP-Code/A_HW/S/HW5/DL/HW5-1_todo.cpp	2026-03-24 15:00:23
++++ /Users/shiyu./Desktop/CP-Code/A_HW/S/HW5/UL/A051_114502540.cpp	2026-04-04 20:50:23
+@@ -17,8 +17,8 @@
+     UserAccount(string name, int b) : username(name), balance(b) {}
+ 
+     // 請在此宣告兩個計費函式為 friend
+-    
+-    
++    friend void billInstance(UserAccount& user, CloudInstance& instance);
++    friend void billStorage(UserAccount& user, CloudStorage& storage);
+ };
+ 
+ // TODO 2: 完成 CloudInstance (雲端主機) 類別
+\ No newline at end of file
+@@ -32,7 +32,7 @@
+     CloudInstance(string name, int rate, int hours) : instanceName(name), hourlyRate(rate), usageHours(hours) {}
+ 
+     // 請在此宣告主機計費函式 billInstance 為 friend
+-    
++    friend void billInstance(UserAccount& user, CloudInstance& instance);
+ };
+ 
+ // TODO 3: 完成 CloudStorage (雲端儲存空間) 類別
+\ No newline at end of file
+@@ -46,18 +46,32 @@
+     CloudStorage(string name, int price, int gb) : storageName(name), pricePerGB(price), usedGB(gb) {}
+ 
+     // 請在此宣告儲存計費函式 billStorage 為 friend
+-    
++    friend void billStorage(UserAccount& user, CloudStorage& storage);
+ };
+ 
+ // TODO 4: 實作 friend 函式：結算主機費用
+ void billInstance(UserAccount& user, CloudInstance& instance) {
+-    
++    int cost = instance.hourlyRate * instance.usageHours;
++    cout << instance.instanceName << " Cost:" << cost;
++    if(user.balance >= cost)
++    {
++        user.balance -= cost;
++        cout << " Balance:" << user.balance << "\n";
+ }
++    else cout << " Insufficient\n";
++}
+ 
+ // TODO 5: 實作 friend 函式：結算儲存空間費用
+ void billStorage(UserAccount& user, CloudStorage& storage) {
+-    
++    int cost = storage.pricePerGB * storage.usedGB;
++    cout << storage.storageName << " Cost:" << cost;
++    if(user.balance >= cost)
++    {
++        user.balance -= cost;
++        cout << " Balance:" << user.balance << "\n";
+ }
++    else cout << " Insufficient\n";
++}
+ 
+ //不需要修改以下的 main 函式
+ int main() {
+\ No newline at end of file

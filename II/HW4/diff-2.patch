@@ -1,0 +1,69 @@
+--- /Users/shiyu./Desktop/CP-Code/_HW/S/HW4/DL/HW4-2/streamlog_student.cpp	2026-03-15 17:25:07
++++ /Users/shiyu./Desktop/CP-Code/_HW/S/HW4/UL/4-2/A042_114502540.cpp	2026-03-27 01:01:00
+@@ -11,6 +11,10 @@
+     // TODO:
+     // Return the position of song in officialOrder
+     // If song is not found, return a very large number
++    for(int i=0; i<officialOrder.size(); ++i)
++    {
++        if(song == officialOrder[i]) return i;
++    }
+     return 1000000000;
+ }
+ 
+\ No newline at end of file
+@@ -30,6 +34,10 @@
+     // Example:
+     // pref[idx][0] = 0
+     // pref[idx][j] = pref[idx][j - 1] + a[j]
++    names[idx] = song;
++    id[song] = idx;
++    pref[idx][0] = 0;
++    for(int j=1; j<=D; ++j) pref[idx][j] = pref[idx][j - 1] + a[j];
+ }
+ 
+ long long StreamLog::rangeSum(const string& song, int l, int r) {
+\ No newline at end of file
+@@ -37,7 +45,8 @@
+     // First find the index of song
+     // Then use prefix sum to calculate:
+     // pref[idx][r] - pref[idx][l - 1]
+-    return 0;
++    int idx = id[song];
++    return pref[idx][r] - pref[idx][l - 1];
+ }
+ 
+ pair<string, long long> StreamLog::overallTop() {
+\ No newline at end of file
+@@ -45,16 +54,28 @@
+     // Compare all songs using total plays in [1, D]
+     // Find the song with the largest total and return its name and value
+     // If there is a tie, the earlier song in officialOrder wins
+-    return {"", 0};
++    int mx = 0;
++    for(int i=1; i<S; ++i)
++    {
++        if((pref[i][D] > pref[mx][D]) || ((pref[i][D] == pref[mx][D]) && (songOrder(names[i]) < songOrder(names[mx])))) mx = i;
+ }
++    return {names[mx], pref[mx][D]};
++}
+ 
+ pair<string, long long> StreamLog::bestSong(int l, int r) {
+     // TODO:
+     // Compare all songs using total plays in [l, r]
+     // Find the song with the largest total and return its name and value
+     // If there is a tie, the earlier song in officialOrder wins
+-    return {"", 0};
++    int mx = 0;
++    for(int i=1; i<S; ++i)
++    {
++        int a = rangeSum(names[i],l,r),
++            b = rangeSum(names[mx],l,r);
++        if((a > b || (a == b) && (songOrder(names[i]) < songOrder(names[mx])))) mx = i;
+ }
++    return {names[mx], rangeSum(names[mx],l,r)};
++}
+ 
+ int main() {
+     int S, D;
+\ No newline at end of file

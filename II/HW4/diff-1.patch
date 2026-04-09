@@ -1,0 +1,68 @@
+--- /Users/shiyu./Desktop/CP-Code/_HW/S/HW4/DL/HW4-1/reviewbox_student.cpp	2026-03-19 15:39:56
++++ /Users/shiyu./Desktop/CP-Code/_HW/S/HW4/UL/4-1/A041_114502540.cpp	2026-03-27 02:54:04
+@@ -6,6 +6,10 @@
+ int ReviewBox::findIndex(const string& song) {
+     // TODO:
+     // Return the index of song in names
++    for(int i=0; i < (int)names.size(); ++i)
++    {
++        if(names[i] == song) return i;
++    }
+     return -1;
+ }
+ 
+\ No newline at end of file
+@@ -17,13 +21,16 @@
+     // Allocate dynamic arrays totalScore and reviewCount
+     // Their sizes should both be names.size()
+     // Initialize all elements to 0
++    totalScore = new long long[names.size()]();
++    reviewCount = new int[names.size()]();
+ }
+ 
+ void ReviewBox::addReview(const string& song, int score) {
+     // TODO:
+     // Find the index of song
+-    // totalScore[idx] += score
+-    // reviewCount[idx]++
++    int idx = findIndex(song);
++    totalScore[idx] += score;
++    reviewCount[idx]++;
+ }
+ 
+ ReviewBox::~ReviewBox() {
+\ No newline at end of file
+@@ -45,6 +52,20 @@
+     // (1) Higher average score wins
+     // (2) If average scores are the same, the song with more reviews wins
+     // (3) If still tied, the earlier song in names wins
++    for(int i=0; i<10; ++i)
++    {
++        if(reviewCount[i] > 0)
++        {
++            ++reviewedSongs;
++            totalReviews += reviewCount[i];
++            double avg = 1.0 * totalScore[i] / reviewCount[i];
++            if((best == -1) || (avg > bestAvg) || (avg == bestAvg && reviewCount[i] > reviewCount[best]))
++            {
++                best = i;
++                bestAvg = avg;
++            }
++        }
++    }
+ 
+     cout << "=== IVE Review Report ===\n";
+     cout << "Reviewed songs: " << reviewedSongs << "\n";
+\ No newline at end of file
+@@ -54,8 +75,8 @@
+     cout << "Average score: " << bestAvg << "\n";
+ 
+     // TODO:
+-    // delete[] totalScore;
+-    // delete[] reviewCount;
++    delete[] totalScore;
++    delete[] reviewCount;
+ }
+ 
+ int main() {
+\ No newline at end of file

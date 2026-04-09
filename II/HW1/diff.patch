@@ -1,0 +1,36 @@
+--- DL/Student.cpp	2026-03-11 23:16:59
++++ UL/A01-114502540.cpp	2026-03-12 18:48:10
+@@ -11,6 +11,7 @@
+ };
+ 
+ const string FILENAME = "kpop.txt";
++// const string FILENAME = "kpop_case2.txt";
+ 
+ bool isValidPhone10(const string& phone) {
+     if (phone.size() != 10) return false;
+@@ -55,17 +56,22 @@
+ }
+ 
+ bool insertContact(vector<Contact>& book, const string& name, const string& phone) {  //You need to code
+-
++    if (findByName(book, name) != -1) return false;
++    book.push_back({name, phone});
+     return true;
+ }
+ 
+ bool updateContact(vector<Contact>& book, const string& name, const string& newPhone) { //You need to code
+-    
++    int idx = findByName(book, name);
++    if (idx == -1) return false; 
++    book[idx].phone = newPhone;
+     return true;
+ }
+ 
+ bool deleteContact(vector<Contact>& book, const string& name) { //You need to code
+-    
++    int idx = findByName(book, name);
++    if (idx == -1) return false; 
++    book.erase(book.begin() + idx);
+     return true;
+ }
+ 

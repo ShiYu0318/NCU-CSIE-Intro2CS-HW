@@ -1,0 +1,133 @@
+--- DL/bank.cpp	2026-03-13 21:14:15
++++ UL/A03_114502540.cpp	2026-03-19 14:28:34
+@@ -10,6 +10,14 @@
+     // - Get current system time
+     // - Store year, month, day, hour, minute, second
+     // write your code here
++    time_t t = time(nullptr);
++    tm* lt = localtime(&t);
++    year = lt->tm_year + 1900;
++    month = lt->tm_mon + 1;
++    day = lt->tm_mday;
++    hour = lt->tm_hour;
++    minute = lt->tm_min;
++    second = lt->tm_sec;
+ }
+ 
+ string TimeStamp::toString() const {
+\ No newline at end of file
+@@ -50,6 +58,13 @@
+     // - Increase activeAccountCount
+     // - Add one OPEN transaction into history
+     // write your code here
++    accountNo = ++nextAccountNo;
++    ownerName = owner;
++    favoriteGroup = group;
++    active = true;
++    balance = initialDeposit;
++    ++activeAccountCount;
++    history.emplace_back(Transaction("OPEN", initialDeposit, balance, "Account opened"));
+ }
+ 
+ void PersonalAccount::deposit(double amount) {
+\ No newline at end of file
+@@ -61,6 +76,11 @@
+     // - Add amount to balance
+     // - Record a DEPOSIT transaction
+     // write your code here
++    if(!active) { cout << "This account is closed.\n"; return; }
++    if(amount <= 0) return;
++    balance += amount;
++    cout << "Deposit successful.\n";
++    history.emplace_back(Transaction("DEPOSIT", amount, balance, "Deposit"));
+ }
+ 
+ bool PersonalAccount::withdraw(double amount) {
+\ No newline at end of file
+@@ -74,7 +94,13 @@
+     // - Record a WITHDRAW transaction
+     // - Return true if success, false if failed
+     // write your code here
+-    return false;
++    if(!active) { cout << "This account is closed.\n"; return false; }
++    if(amount <= 0) return false;
++    if(balance < amount) { cout << "Insufficient balance.\n"; return false; }
++    balance -= amount;
++    cout << "Withdraw successful.\n";
++    history.emplace_back(Transaction("WITHDRAW", amount, balance, "Withdraw"));
++    return true;
+ }
+ 
+ void PersonalAccount::closeAccount() {
+\ No newline at end of file
+@@ -86,6 +112,9 @@
+     // - Set active = false
+     // - Decrease activeAccountCount
+     // - Record a CLOSE transaction
++    if(!active) { cout << "This account is closed.\n"; return; }
++    active = false;
++    --activeAccountCount;
+     history.push_back(Transaction("CLOSE", 0.0, balance, "Account closed"));
+     cout << "Account closed successfully.\n";
+ }
+\ No newline at end of file
+@@ -165,8 +194,23 @@
+     // - Calculate lowBalanceAccounts
+     // - Calculate totalBalance
+     // write your code here
++    totalAccounts = (int)accounts.size();
++    activeAccounts = 0;
++    lowBalanceAccounts = 0;
++    totalBalance = 0.0;
++
++    for(int i=0; i<totalAccounts; ++i)
++    {
++        if(accounts[i].isActive())
++        {
++            ++activeAccounts;
++            totalBalance += accounts[i].getBalance();
++            if(accounts[i].isLowBalance(lowBalanceLimit)) ++lowBalanceAccounts;
+ }
++    }
+ 
++}
++
+ void BankAccountSummary::printSummary() const {
+     cout << "\n========== Bank Summary ==========\n";
+     cout << "Total Accounts       : " << totalAccounts << "\n";
+\ No newline at end of file
+@@ -187,6 +231,10 @@
+     // - Return pointer to that account if found
+     // - Return nullptr if not found
+     // write your code here
++    for(auto &i:accounts)
++    {
++        if(i.getAccountNo() == accountNo) return &i;
++    }
+     return nullptr;
+ }
+ 
+\ No newline at end of file
+@@ -244,7 +292,11 @@
+     // Goal:
+     // - Print all active accounts with balance lower than limit
+     // write your code here
++    for(auto i:accounts)
++    {
++        if(i.isLowBalance(limit)) i.printBasicInfo();
+ }
++}
+ 
+ void KpopBank::viewBankSummary() {
+     // TODO 9
+\ No newline at end of file
+@@ -253,6 +305,8 @@
+     // - Call buildSummary()
+     // - Call printSummary()
+     // write your code here
++    summary.buildSummary(accounts, 5000);
++    summary.printSummary();
+ }
+ 
+ void KpopBank::generalUserMenu() {
+\ No newline at end of file
