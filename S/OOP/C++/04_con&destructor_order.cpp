@@ -1,6 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class A
 {
     public:
@@ -22,3 +19,10 @@ int main()
 {
     B b;
 }
+
+/*
+A
+B
+b
+a
+*/
