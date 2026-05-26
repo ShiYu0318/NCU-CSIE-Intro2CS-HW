@@ -21,7 +21,7 @@ HWXX
 │   ├── 範例程式碼.java
 │   ├── 標頭檔.h
 │   └── 文字讀寫檔.txt
-├── UL  # 存放上傳（UpLoad）到 ee-class 和 DOMJudge 的檔案
+├── UL  # 存放上傳（UpLoad）到 DOMJudge 和 ee-class 的檔案
 │   ├── AXX_114502XXX.cpp
 │   └── AXX_114502XXX.java
 ├── output # 存放自動測試腳本 `test.sh` 產出的檔案
